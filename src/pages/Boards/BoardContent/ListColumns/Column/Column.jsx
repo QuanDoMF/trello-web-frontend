@@ -211,12 +211,13 @@ const Column = ({ column }) => {
                   size="small"
                   variant="outlined"
                   autoFocus
+                  data-no-dnd="true"
                   value={newCardTitle}
                   onChange={(e) => setNewCardTitle(e.target.value)}
                   sx={{
                     "& label": { color: "text.primary" },
                     "& input": {
-                      color: "white",
+                      color: (theme) => theme.palette.primary.main,
                       bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : 'white')
                     },
                     "& label.Mui-focused": { color: (theme) => theme.palette.primary.main },

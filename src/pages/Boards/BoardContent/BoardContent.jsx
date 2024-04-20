@@ -4,8 +4,6 @@ import { mapOrder } from "~/utils/sorts";
 import {
   DndContext,
   // PointerSensor,
-  MouseSensor,
-  TouchSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -16,6 +14,7 @@ import {
   getFirstCollision,
   // rectIntersection,
 } from "@dnd-kit/core";
+import { MouseSensor, TouchSensor } from '~/customLibraies/DndKitSensors'
 import { arrayMove } from "@dnd-kit/sortable";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Column from "./ListColumns/Column/Column";
