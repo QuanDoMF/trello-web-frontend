@@ -25,7 +25,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const Column = ({ column }) => {
+const Column = ({ column, createNewCard }) => {
   // sắp xếp card
   const {
     attributes,
@@ -51,13 +51,18 @@ const Column = ({ column }) => {
   const toggleOpenNewCardForm = () => {
     setOpenNewCardForm(!openNewCardForm)
   }
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enterr Card title')
       return
     }
-    // console.log(newCardTitle)
     //  gọi API ở đây
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+    await createNewCard(newCardData)
+    // đóng trạng thái 
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }

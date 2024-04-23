@@ -1,5 +1,5 @@
 import Box from "@mui/system/Box";
-import ListColums from "./ListColumns/ListColumns";
+import ListColumns from "./ListColumns/ListColumns";
 import { mapOrder } from "~/utils/sorts";
 import {
   DndContext,
@@ -26,7 +26,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 
-const BoardContent = ({ board }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) => {
   // yêu cầu chuột di chuyển 10px thì mới kick hoạt event, fix trường hợp click chuột đã bị gọi event
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -282,11 +282,12 @@ const BoardContent = ({ board }) => {
       );
 
       // cai này để sau này dùng để xử lý dữ liệu gọi API
-
       // const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
       // console.log("dndOrderedColumns", dndOrderedColumns);
       // console.log("dndOrderedColumnsIds", dndOrderedColumnsIds);
       // cập nhật lại state ban đầu sau khi kéo thả
+
+      moveColumns(dndOrderedColumns)
 
       setOrderedColumns(dndOrderedColumns);
     }
@@ -355,7 +356,11 @@ const BoardContent = ({ board }) => {
           p: "10px 0",
         }}
       >
-        <ListColums columns={orderedColumns} />
+        <ListColumns
+          columns={orderedColumns}
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard}
+        />
         <DragOverlay dropAnimation={customDropAnimation}>
           {!activeDragItemType && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

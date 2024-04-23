@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../trello-web-backend"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "trello-web-backend"
+	}
+}
