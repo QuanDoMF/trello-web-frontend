@@ -1,6 +1,5 @@
 import Box from "@mui/system/Box";
 import ListColumns from "./ListColumns/ListColumns";
-import { mapOrder } from "~/utils/sorts";
 import {
   DndContext,
   // PointerSensor,
@@ -26,7 +25,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 
-const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) => {
   // yêu cầu chuột di chuyển 10px thì mới kick hoạt event, fix trường hợp click chuột đã bị gọi event
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: { distance: 10 },
@@ -54,9 +53,9 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
 
   // điểm va chạm cuối cùng(xử lý thuật toán phát hiện va chạm)
   const lastOverId = useRef(null);
-
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, "_id"));
+    //column đã được sắp xếp ở component cha 
+    setOrderedColumns(board.columns);
   }, [board]);
 
   // function chung cập nhật lại state khi kéo card qua 2 column khác nhau
@@ -158,7 +157,7 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
       setOldColumnWhenDraggingCard(findColumnByCardId(event?.active?.id));
     }
   };
-
+  // tìm một column theo cardId
   const findColumnByCardId = (cardId) => {
     return orderedColumns.find((column) =>
       column.cards.map((card) => card._id)?.includes(cardId)
@@ -234,20 +233,28 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
         );
       } else {
         // hành động kéo thả card trong cùng 1 column
+
+        // lấy vị trí cũ ( từ thằng oldColumnWhenDraggingCard)
         const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex(
           (c) => c._id === activeDragItemId
         );
+        // lấy bị trí mới( từ thằng overColumn)
         const newCardIndex = overColumn?.cards?.findIndex(
           (c) => c._id === overCardId
         );
 
+        // Dùng arrayMove vì kéo thả card trong cùng column cũng giống như logic kéo column trong 1 board
         const dndOrderedCards = arrayMove(
           oldColumnWhenDraggingCard?.cards,
           oldCardIndex,
           newCardIndex
         );
 
+        const dndOrderedCardsIds = dndOrderedCards.map((card) => card._id);
+        // vẫn gọi update state ở đây để tránh delay hoặc flickering giao diện lúc kéo thả cần chờ gọi API
         setOrderedColumns((prevColumns) => {
+          // Clone lại mảng OrderedColumnState cũ ra một cái mới để xử lý data rồi return - 
+          // cập nhật lại OrderedColumnState mới
           const nextColumns = cloneDeep(prevColumns);
 
           // tìm tới column mà chúng ta đang thả
@@ -256,9 +263,11 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
           );
           // cập nhật lại 2 giá trị mới là card và cardOrderIds trong cái targetColumn
           targetColumn.cards = dndOrderedCards;
-          targetColumn.cardOrderIds = dndOrderedCards.map((card) => card._id);
+          targetColumn.cardOrderIds = dndOrderedCardsIds
           return nextColumns;
         });
+        // truyền lên mảng card, id các card, và id column cũ của card
+        moveCardInTheSameColumn(dndOrderedCards, dndOrderedCardsIds, oldColumnWhenDraggingCard._id)
       }
     }
 
@@ -281,15 +290,11 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
         newColumnIndex
       );
 
-      // cai này để sau này dùng để xử lý dữ liệu gọi API
-      // const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
-      // console.log("dndOrderedColumns", dndOrderedColumns);
-      // console.log("dndOrderedColumnsIds", dndOrderedColumnsIds);
       // cập nhật lại state ban đầu sau khi kéo thả
+      setOrderedColumns(dndOrderedColumns);
 
       moveColumns(dndOrderedColumns)
 
-      setOrderedColumns(dndOrderedColumns);
     }
     setOldColumnWhenDraggingCard(null);
     setActiveDragItemId(null);
