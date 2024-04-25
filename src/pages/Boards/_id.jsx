@@ -10,7 +10,8 @@ import {
   createNewColumnAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI
 } from "~/apis";
 // import { mockData } from "~/apis/mock-data";
 import { generatePlaceholderCard } from "~/utils/formatters";
@@ -34,7 +35,6 @@ const Board = () => {
           column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
         }
       })
-      console.log('board', board)
       setBoard(board)
     })
   }, [])
@@ -62,7 +62,12 @@ const Board = () => {
     // cập nhật state board
     const newBoard = { ...board }
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
-    if (columnToUpdate) {
+    // hàm some js cũng duyệt mảng trả về true false với đk là hàm callback bên trong, khi có kết quả nó trả về luôn và dùng vòng lặp
+    if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+      columnToUpdate.cards = [createdCard]
+      columnToUpdate.cardOrderIds = [createdCard._id]
+    }
+    else {
       columnToUpdate.cards.push(createdCard)
       columnToUpdate.cardOrderIds.push(createdCard._id)
     }
@@ -95,6 +100,46 @@ const Board = () => {
 
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardsIds })
   }
+
+
+  // di chuyển card sang column khác
+
+  /** 
+  * Khi di chuyển card sang column khác: 
+  * B1: cần cập nhật mảng cardOrderIds của Column ban đầu chưa nó(Là xóa _id của Card đó ra khỏi mảng)
+  * B2: cần cập nhật mảng cardOrderIds của Column tiếp theo (Là thêm _id của Card đó vào mảng)
+  * B3: cập nhật ColumnId mới của card đã kéo
+  * =>   làm một API support riêng
+  */
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    // console.log('~ file: _id ~ moveCardToDifferentColumn ~ dndOrderedColumn:', dndOrderedColumns)
+    // console.log('~ file: _id ~ moveCardToDifferentColumn ~ nextColumnId:', nextColumnId)
+    // console.log('~ file: _id ~ moveCardToDifferentColumn ~ prevColumnId:', prevColumnId)
+    // console.log('~ file: _id ~ moveCardToDifferentColumn ~ currentCardId:', currentCardId)
+
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    // nếu column rỗng tạo FE_placeholder-card thì gửi lên BE đã validation objectId thì sẽ k hiểu placeholder-card là gì
+    let prevCardOrderIds = dndOrderedColumns.find(column => column._id === prevColumnId)?.cardOrderIds
+    // nên trước khi gửi lên BE sẽ set prevCardOrderIds là mảng rỗng
+    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
+
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      // lấy ra cardOrderIds của column cũ
+      prevCardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(column => column._id === nextColumnId)?.cardOrderIds,
+    })
+    // gọi API xử lý phía BE
+
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -125,6 +170,7 @@ const Board = () => {
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
       />
     </Container>
   );
