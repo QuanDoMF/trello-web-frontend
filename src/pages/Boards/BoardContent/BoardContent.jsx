@@ -31,7 +31,8 @@ const BoardContent = ({
   createNewCard,
   moveColumns,
   moveCardInTheSameColumn,
-  moveCardToDifferentColumn
+  moveCardToDifferentColumn,
+  deleteColumnDetails
 }) => {
   // yêu cầu chuột di chuyển 10px thì mới kick hoạt event, fix trường hợp click chuột đã bị gọi event
   // const pointerSensor = useSensor(PointerSensor, {
@@ -163,6 +164,7 @@ const BoardContent = ({
   };
   // khi bắt đầu kéo một phần tử
   const handleDragStart = (event) => {
+    console.log('🚀 ~ handleDragStart ~ event:', event)
     setActiveDragItemId(event?.active?.id);
     setActiveDragItemType(
       event?.active?.data?.current?.columnId
@@ -386,6 +388,7 @@ const BoardContent = ({
           columns={orderedColumns}
           createNewColumn={createNewColumn}
           createNewCard={createNewCard}
+          deleteColumnDetails={deleteColumnDetails}
         />
         <DragOverlay dropAnimation={customDropAnimation}>
           {!activeDragItemType && null}

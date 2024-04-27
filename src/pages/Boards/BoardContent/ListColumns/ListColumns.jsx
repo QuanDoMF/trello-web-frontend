@@ -11,7 +11,7 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
+const ListColumns = ({ columns, createNewColumn, createNewCard, deleteColumnDetails }) => {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState('')
   const toggleOpenNewColumnForm = () => {
@@ -52,7 +52,11 @@ const ListColumns = ({ columns, createNewColumn, createNewCard }) => {
       >
         {/* Box column test 01 */}
         {columns?.map((column) => {
-          return <Column key={column._id} column={column} createNewCard={createNewCard} />;
+          return <Column key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
+          />;
         })}
 
         {/*Box add new column  */}

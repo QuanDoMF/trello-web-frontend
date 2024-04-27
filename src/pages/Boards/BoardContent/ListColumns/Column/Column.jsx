@@ -24,7 +24,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const Column = ({ column, createNewCard }) => {
+import { useConfirm } from "material-ui-confirm";
+
+const Column = ({ column, createNewCard, deleteColumnDetails }) => {
   // sắp xếp card
   const {
     attributes,
@@ -75,6 +77,30 @@ const Column = ({ column, createNewCard }) => {
     setAnchorEl(null);
   };
 
+  const confirmDeleteColumn = useConfirm()
+  // xử lý xóa một column và cards
+  const handleDeleteColumn = () => {
+    confirmDeleteColumn({
+      title: 'Delete Column?',
+      description: 'This action will permanently delete your Column and its Cards! Are you sure?',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel',
+
+      // allowClose: false,
+      // dialogProps: { maxWidth: 'xs' },
+      // confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+      // cancellationButtonProps: { color: 'inherit' },
+
+      // description: 'phải nhập chữ "tquandoo" mới được confirm',
+      // confirmationKeyword: 'tquandoo'
+    }).then(() => {
+
+      // gọi props function deleteColumnDetails lên component cha để xử lý truyền columnId
+      deleteColumnDetails(column._id)
+    }).catch(() => {
+
+    })
+  }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
       <Box
@@ -115,12 +141,16 @@ const Column = ({ column, createNewCard }) => {
           <Box>
             <Tooltip title="More-options">
               <ExpandMoreIcon
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer'
+                  }
+                }}
                 id="basic-column-dropdown"
                 aria-controls={open ? "basic-menu-column-dropdown" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
                 onClick={handleClick}
-                sx={{ color: "text.primary", cursor: "poiter" }}
               />
             </Tooltip>
             <Menu
@@ -128,13 +158,24 @@ const Column = ({ column, createNewCard }) => {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 "aria-labelledby": "basic-column-dropdown",
               }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={toggleOpenNewCardForm}
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .add-card-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <AddCardIcon fontSize="small" />
+                  <AddCardIcon fontSize="small" className="add-card-icon" />
                 </ListItemIcon>
                 <ListItemText>Add New Card</ListItemText>
               </MenuItem>
@@ -158,11 +199,21 @@ const Column = ({ column, createNewCard }) => {
               </MenuItem>
 
               <Divider />
-              <MenuItem>
-                <ListItemIcon>
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx={{
+                  '&:hover': {
+                    color: 'warning.dark',
+                    '& .delete-forever-icon': {
+                      color: 'warning.dark'
+                    }
+                  }
+                }}
+              >
+                <ListItemIcon className="delete-forever-icon">
                   <DeleteForeverIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
               <MenuItem>
                 <ListItemIcon>

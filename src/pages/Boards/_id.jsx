@@ -11,13 +11,14 @@ import {
   createNewCardAPI,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI
+  moveCardToDifferentColumnAPI,
+  deleteColumnDetailsAPI
 } from "~/apis";
 // import { mockData } from "~/apis/mock-data";
 import { generatePlaceholderCard } from "~/utils/formatters";
 import { isEmpty } from "lodash";
 import { mapOrder } from "~/utils/sorts";
-
+import { toast } from "react-toastify";
 const Board = () => {
   const [board, setBoard] = useState(null)
   useEffect(() => {
@@ -137,9 +138,22 @@ const Board = () => {
       nextCardOrderIds: dndOrderedColumns.find(column => column._id === nextColumnId)?.cardOrderIds,
     })
     // gọi API xử lý phía BE
-
   }
 
+  // Xử lý xóa một Column và Cards bên trong nó
+
+  const deleteColumnDetails = (columnId) => {
+    // update chuẩn dữ liệu state board
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter((column) => column._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id) => _id !== columnId)
+    setBoard(newBoard)
+
+    // Gọi API Backend
+    deleteColumnDetailsAPI(columnId).then((res) => {
+      toast.success(res?.deleteResult)
+    })
+  }
   if (!board) {
     return (
       <Box sx={{
@@ -171,6 +185,7 @@ const Board = () => {
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
         moveCardToDifferentColumn={moveCardToDifferentColumn}
+        deleteColumnDetails={deleteColumnDetails}
       />
     </Container>
   );
