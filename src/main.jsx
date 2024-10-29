@@ -8,21 +8,27 @@ import { ConfirmProvider } from 'material-ui-confirm'; // cấu hình mui-Dialog
 import theme from "~/theme"; // Đảm bảo bạn có file theme hợp lệ
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Provider } from "react-redux";
+import { store } from "~/redux/store.js"
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
-  <CssVarsProvider theme={theme}>
-    <ConfirmProvider defaultOptions={{
-      allowClose: false,
-      dialogProps: { maxWidth: 'xs' },
-      confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
-      cancellationButtonProps: { color: 'inherit' },
-      buttonOrder: ['confirm', 'cancel']
-    }}>
-      <CssBaseline />
-      <App />
-      <ToastContainer position="bottom-left" theme="colored" autoClose={1000} />
-    </ConfirmProvider>
-  </CssVarsProvider>
+  <Provider store={store}>
+    <CssVarsProvider theme={theme}>
+      <ConfirmProvider defaultOptions={{
+        allowClose: false,
+        dialogProps: { maxWidth: 'xs' },
+        confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+        cancellationButtonProps: { color: 'inherit' },
+
+        buttonOrder: ['confirm', 'cancel']
+      }}>
+        <CssBaseline />
+        <App />
+        <ToastContainer position="bottom-left" theme="colored" autoClose={1000} />
+      </ConfirmProvider>
+    </CssVarsProvider>
+  </Provider>
   // </React.StrictMode>
 );
 
