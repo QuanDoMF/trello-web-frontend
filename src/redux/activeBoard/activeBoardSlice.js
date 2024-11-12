@@ -24,9 +24,8 @@ export const activeBoardSlice = createSlice({
             // gán action.payload ra một biến có ý nghĩa hơn
             const board = action.payload;
 
-
             // update lại dữ liệu
-            state.currentActiveBoard = board;
+            state.currentActiveBoard = { ...board };
         }
     },
     extraReducers: (builder) => {
