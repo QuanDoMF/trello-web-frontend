@@ -351,6 +351,7 @@ const Column = ({ column }) => {
                 }}
               >
                 <Button
+                  className="interceptor-loading"
                   onClick={addNewCard}
                   variant="contained"
                   color="success"

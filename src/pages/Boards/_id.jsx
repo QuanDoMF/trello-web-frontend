@@ -1,6 +1,5 @@
 // import Box from "@mui/system/Box";
-import { Container, Box, Typography } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Container } from "@mui/material";
 import AppBar from "~/components/AppBar/AppBar";
 import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
@@ -17,14 +16,18 @@ import {
   updateCurrentActiveBoard,
   selectCurrentActiveBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
+import { useParams } from "react-router-dom";
+import PageLoadingSpinner from "~/components/Loading/PageLoadingSpinner";
 
 const Board = () => {
   const dispatch = useDispatch();
   const board = useSelector(selectCurrentActiveBoard);
+  const { boardId } = useParams();
+
   useEffect(() => {
-    const boardId = "6623655c42a019242c046fcd";
+    // const boardId = "6623655c42a019242c046fcd";
     dispatch(fetchBoardDetailsAPI(boardId));
-  }, [dispatch]);
+  }, [dispatch, boardId]);
 
   // Func này có nhiệm vụ gọi API và xử lý kéo thả Column xong xuôi
   // chỉ cần gọi API để cập nhật mảng columnOrderIds của Board chứa nó(thay đổi vị trí trong mảng)
@@ -114,28 +117,7 @@ const Board = () => {
   // Xử lý xóa một Column và Cards bên trong nó
 
   if (!board) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100vw",
-          height: "100vh",
-          gap: 2,
-        }}
-      >
-        <CircularProgress />
-        <Typography
-          sx={{
-            fontWeight: 600,
-          }}
-        >
-          Loading board...
-        </Typography>
-      </Box>
-    );
+    return <PageLoadingSpinner caption="Loading board..." />;
   }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: "100vh" }}>
