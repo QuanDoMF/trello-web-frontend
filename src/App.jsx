@@ -1,11 +1,19 @@
 import Board from "./pages/Boards/_id";
 import NotFound from "./pages/404/NotFound";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Auth from "./pages/Auth/Auth";
 import AccountVerification from "./pages/Auth/AccountVerification";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "./redux/user/userSlice";
 
+const ProtectedRoute = ({ user }) => {
+  if (!user) {
+    return <Navigate to="/login" replace={true} />;
+  }
+  return <Outlet />;
+};
 function App() {
-  // const navigate = useNavigate();
+  const currentUser = useSelector(selectCurrentUser);
 
   return (
     <Routes>
@@ -16,7 +24,9 @@ function App() {
           <Navigate to="/boards/6623655c42a019242c046fcd" replace={true} />
         }
       />
-      <Route path="/boards/:boardId" element={<Board />} />
+      <Route element={<ProtectedRoute user={currentUser} />}>
+        <Route path="/boards/:boardId" element={<Board />} />
+      </Route>
       {/* (*) là trường hợp không match với route nào ở trên */}
 
       {/* authentication */}

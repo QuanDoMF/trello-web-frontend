@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import theme from '~/theme'
+// import theme from '~/theme'
 import authorizeAxiosInstance from '~/utils/authorizeAxios'
 import { API_ROOT } from '~/utils/constants'
 
