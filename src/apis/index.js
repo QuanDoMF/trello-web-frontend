@@ -46,4 +46,9 @@ export const verifyUserAPI = async (data) => {
   toast.success('Account created successfully! Now you can login to enjoy our service! Have a good day!', { theme: 'colored' })
   return response.data
 }
+
+export const refreshTokenAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/refresh-token`)
+  return response.data
+}
 // Cards
