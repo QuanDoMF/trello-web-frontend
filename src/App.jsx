@@ -3,8 +3,10 @@ import NotFound from "./pages/404/NotFound";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Auth from "./pages/Auth/Auth";
 import AccountVerification from "./pages/Auth/AccountVerification";
+import Settings from "./pages/settings/Settings";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "./redux/user/userSlice";
+import Boards from "./pages/Boards";
 
 const ProtectedRoute = ({ user }) => {
   if (!user) {
@@ -25,7 +27,13 @@ function App() {
         }
       />
       <Route element={<ProtectedRoute user={currentUser} />}>
+        {/* Boards */}
         <Route path="/boards/:boardId" element={<Board />} />
+        <Route path="/boards" element={<Boards />} />
+
+        {/* User settings */}
+        <Route path="/settings/account" element={<Settings />} />
+        <Route path="/settings/security" element={<Settings />} />
       </Route>
       {/* (*) là trường hợp không match với route nào ở trên */}
 

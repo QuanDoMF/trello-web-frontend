@@ -20,6 +20,8 @@ import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link } from "react-router-dom";
+
 const AppBar = () => {
   const [searchValue, setSearchValue] = useState("");
   return (
@@ -43,42 +45,44 @@ const AppBar = () => {
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <AppsIcon sx={{ color: "white" }} />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-          <SvgIcon
-            component={TrelloIcon}
-            inheritViewBox
-            sx={{ color: "white" }}
-            fontSize="small"
-          />
-          <Typography
-            variant="span"
-            sx={{
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              color: "white",
-            }}
-          >
-            Trello
-          </Typography>
-
-          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-            <Workspaces />
-            <Resent />
-            <Starred />
-            <Templates />
-            <Button
-              variant="outlined"
-              endIcon={<LibraryAddIcon />}
+        <Link to="/">
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <SvgIcon
+              component={TrelloIcon}
+              inheritViewBox
+              sx={{ color: "white" }}
+              fontSize="small"
+            />
+            <Typography
+              variant="span"
               sx={{
+                fontSize: "1.2rem",
+                fontWeight: "bold",
                 color: "white",
-                border: "none",
-                "&:hover": { border: "none" },
               }}
             >
-              Create
-            </Button>
+              Trello
+            </Typography>
+
+            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+              <Workspaces />
+              <Resent />
+              <Starred />
+              <Templates />
+              <Button
+                variant="outlined"
+                endIcon={<LibraryAddIcon />}
+                sx={{
+                  color: "white",
+                  border: "none",
+                  "&:hover": { border: "none" },
+                }}
+              >
+                Create
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        </Link>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <TextField

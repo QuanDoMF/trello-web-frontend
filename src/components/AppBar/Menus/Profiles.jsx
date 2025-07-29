@@ -1,6 +1,7 @@
 import Box from "@mui/system/Box";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -66,19 +67,21 @@ const Profiles = () => {
           "aria-labelledby": "basic-button-profiles",
         }}
       >
-        <MenuItem
-          sx={{
-            "&:hover": {
-              color: "success.light",
-            },
-          }}
-        >
-          <Avatar
-            sx={{ width: "28px", height: "28px", mr: 2 }}
-            src={currentUser?.avatar}
-          />
-          Profile
-        </MenuItem>
+        <Link to="/settings/account">
+          <MenuItem
+            sx={{
+              "&:hover": {
+                color: "success.light",
+              },
+            }}
+          >
+            <Avatar
+              sx={{ width: "28px", height: "28px", mr: 2 }}
+              src={currentUser?.avatar}
+            />
+            Profile
+          </MenuItem>
+        </Link>
         <Divider />
         <MenuItem>
           <ListItemIcon>
