@@ -1,6 +1,5 @@
 import Box from "@mui/system/Box";
 import { toast } from "react-toastify";
-import { Typography } from "@mui/material";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -26,10 +25,15 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { useConfirm } from "material-ui-confirm";
 
-import { createNewCardAPI, deleteColumnDetailsAPI } from "~/apis";
+import {
+  createNewCardAPI,
+  deleteColumnDetailsAPI,
+  updateColumnDetailsAPI,
+} from "~/apis";
 import { cloneDeep } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { updateCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
 
 const Column = ({ column }) => {
   // sắp xếp card
@@ -141,6 +145,20 @@ const Column = ({ column }) => {
       })
       .catch(() => {});
   };
+
+  const onUpdateColumnTitle = (newTitle) => {
+    // gọi API update Column và xử lý dữ liệu board trong redux
+    updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+      const newBoard = cloneDeep(board);
+      console.log("🚀 ~ onUpdateColumnTitle ~ newBoard:", newBoard);
+      const colummToUpdate = newBoard.columns.find((c) => c._id === column._id);
+      if (colummToUpdate) {
+        colummToUpdate.title = newTitle;
+      }
+      dispatch(updateCurrentActiveBoard(newBoard));
+    });
+  };
+
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
       <Box
@@ -168,16 +186,11 @@ const Column = ({ column }) => {
             justifyContent: "space-between",
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: "1rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            {column?.title}
-          </Typography>
+          <ToggleFocusInput
+            value={column?.title}
+            onChangedValue={onUpdateColumnTitle}
+            data-no-dnd="true"
+          />
           <Box>
             <Tooltip title="More-options">
               <ExpandMoreIcon
