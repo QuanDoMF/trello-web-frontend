@@ -18,10 +18,13 @@ import {
 } from "~/redux/activeBoard/activeBoardSlice";
 import { useParams } from "react-router-dom";
 import PageLoadingSpinner from "~/components/Loading/PageLoadingSpinner";
+import ActiveCard from "~/components/Modal/ActiveCard/ActiveCard";
+import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 
 const Board = () => {
   const dispatch = useDispatch();
   const board = useSelector(selectCurrentActiveBoard);
+  const activeCard = useSelector(selectCurrentActiveCard);
   const { boardId } = useParams();
 
   useEffect(() => {
@@ -121,6 +124,8 @@ const Board = () => {
   }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: "100vh" }}>
+      {/* mỗi thời điểm chỉ tồn tại 1 modal ActiveCard */}
+      {activeCard && <ActiveCard />}
       <AppBar />
       <BoardBar board={board} />
       <BoardContent

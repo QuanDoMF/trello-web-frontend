@@ -8,12 +8,16 @@ import CardMedia from "@mui/material/CardMedia";
 import GroupIcon from "@mui/icons-material/Group";
 import CommentIcon from "@mui/icons-material/Comment";
 import AttachmentIcon from "@mui/icons-material/Attachment";
-
 // dndkit
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { useDispatch } from "react-redux";
+import { updateCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
+
 const Card = ({ card }) => {
+  const dispatch = useDispatch();
+
   const {
     attributes,
     listeners,
@@ -38,8 +42,13 @@ const Card = ({ card }) => {
     );
   };
 
+  const setActiveCard = (card) => {
+    dispatch(updateCurrentActiveCard(card));
+  };
+
   return (
     <MuiCard
+      onClick={() => setActiveCard(card)}
       ref={setNodeRef}
       style={dndKitCardStyles}
       {...attributes}
@@ -49,8 +58,8 @@ const Card = ({ card }) => {
         boxShadow: " 0 1px 1px rgba(0, 0 , 0, 0.2)",
         overflow: "unset",
         display: card?.FE_PlaceholderCard ? "none" : "block",
-        border: '1px solid transparent',
-        '&:hover': { borderColor: (theme) => theme.palette.primary.main }
+        border: "1px solid transparent",
+        "&:hover": { borderColor: (theme) => theme.palette.primary.main },
       }}
     >
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
