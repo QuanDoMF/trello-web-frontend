@@ -26,6 +26,20 @@ export const activeBoardSlice = createSlice({
 
             // update lại dữ liệu
             state.currentActiveBoard = { ...board };
+        },
+        updateCardInBoard: (state, action) => {
+            const incomingCard = action.payload;
+
+            const column = state.currentActiveBoard.columns.find(column => column._id === incomingCard.columnId);
+            if (column) {
+                const card = column.cards.find(card => card._id === incomingCard._id)
+                if (card) {
+                    // card.title = incomingCard.title;
+                    Object.keys(incomingCard).forEach(key => {
+                        card[key] = incomingCard[key];
+                    })
+                }
+            }
         }
     },
     extraReducers: (builder) => {
@@ -49,7 +63,7 @@ export const activeBoardSlice = createSlice({
     }
 })
 
-export const { updateCurrentActiveBoard } = activeBoardSlice.actions;
+export const { updateCurrentActiveBoard, updateCardInBoard } = activeBoardSlice.actions;
 
 // Selector:
 export const selectCurrentActiveBoard = (state) => state.activeBoard.currentActiveBoard;

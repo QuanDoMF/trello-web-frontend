@@ -44,6 +44,7 @@ import { updateCardDetailsAPI } from "~/apis";
 import {
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
+  updateCardInBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
 
 const SidebarItem = styled(Box)(({ theme }) => ({
@@ -80,11 +81,7 @@ function ActiveCard() {
     // function này sẽ gọi API để cập nhật card
     const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData);
     dispatch(updateCurrentActiveCard(updatedCard));
-
-    // const newBoard = {
-    //   ...board,
-
-    // };
+    dispatch(updateCardInBoard(updatedCard));
     return;
   };
 
@@ -102,7 +99,13 @@ function ActiveCard() {
     let reqData = new FormData();
     reqData.append("cardCover", event.target?.files[0]);
 
-    // Gọi API...
+    // toast.promise(
+    //   callApiUpdateCard( { coverUrl: req})
+    // )
+  };
+
+  const onUpdateCardDescription = (newDescription) => {
+    callApiUpdateCard({ description: newDescription });
   };
 
   return (
@@ -204,7 +207,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
