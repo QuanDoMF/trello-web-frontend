@@ -52,7 +52,6 @@ function AccountTab() {
           toast.success("User updated successfully");
         }
       });
-    // Gọi API...
   };
 
   const uploadAvatar = (e) => {

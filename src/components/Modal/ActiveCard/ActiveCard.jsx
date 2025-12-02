@@ -90,7 +90,6 @@ function ActiveCard() {
   };
 
   const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0]);
     const error = singleFileValidator(event.target?.files[0]);
     if (error) {
       toast.error(error);
@@ -98,10 +97,16 @@ function ActiveCard() {
     }
     let reqData = new FormData();
     reqData.append("cardCover", event.target?.files[0]);
-
-    // toast.promise(
-    //   callApiUpdateCard( { coverUrl: req})
-    // )
+    toast
+      .promise(
+        callApiUpdateCard(reqData).finally(() => {
+          event.target.value = ""; // clear file input
+        }),
+        { pending: "Updating..." }
+      )
+      .then(() => {
+        toast.success("Card cover updated successfully");
+      });
   };
 
   const onUpdateCardDescription = (newDescription) => {

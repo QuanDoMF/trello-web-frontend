@@ -165,7 +165,6 @@ const BoardContent = ({
   };
   // khi bắt đầu kéo một phần tử
   const handleDragStart = (event) => {
-    console.log("🚀 ~ handleDragStart ~ event:", event);
     setActiveDragItemId(event?.active?.id);
     setActiveDragItemType(
       event?.active?.data?.current?.columnId
