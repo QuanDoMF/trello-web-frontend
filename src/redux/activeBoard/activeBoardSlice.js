@@ -46,6 +46,7 @@ export const activeBoardSlice = createSlice({
         builder
             .addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
                 let board = action.payload;
+                board.FE_allUsers = board.owners.concat(board.members)
                 board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
                 board.columns.forEach(column => {
                     // khi f5 trang web thì cần xử lí vấn đề kéo thả vào một column rỗng
