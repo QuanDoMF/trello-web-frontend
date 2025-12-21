@@ -10,8 +10,8 @@ export const fetchNotificationsAPI = createAsyncThunk('notifications/fetchNotifi
     return response.data
 })
 
-export const updateBoardInvitationAPI = createAsyncThunk('notifications/updateBoardInvitationAPI', async (notificationId, status) => {
-    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/invitations/board/${notificationId}`, { status })
+export const updateBoardInvitationAPI = createAsyncThunk('notifications/updateBoardInvitationAPI', async ({ status, invitationId }) => {
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/invitations/board/${invitationId}`, { status })
     return response.data
 })
 export const notificationsSlice = createSlice({
@@ -35,12 +35,12 @@ export const notificationsSlice = createSlice({
             // show cái mới nhất lên trên cùng
             state.currentNotifications = Array.isArray(incomingNotifications) ? incomingNotifications.reverse() : [];
         })
-        .addCase(updateBoardInvitationAPI.fulfilled, (state, action) => {
-            let incomingInvitation = action.payload;
-            // update lại dữ liệu
-            const getInvitation = state.currentNotifications.find(i => i._id === incomingInvitation._id);
-            getInvitation.boardInvitation = incomingInvitation.boardInvitation;
-        })
+            .addCase(updateBoardInvitationAPI.fulfilled, (state, action) => {
+                let incomingInvitation = action.payload;
+                // update lại dữ liệu
+                const getInvitation = state.currentNotifications.find(i => i._id === incomingInvitation._id);
+                getInvitation.boardInvitation = incomingInvitation.boardInvitation;
+            })
     }
 })
 
