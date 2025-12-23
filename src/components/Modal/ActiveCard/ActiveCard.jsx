@@ -118,13 +118,14 @@ function ActiveCard() {
       disableScrollLock
       open={isShowModalActiveCard}
       onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
-      sx={{ overflowY: "auto" }}
     >
       <Box
         sx={{
           position: "relative",
           width: 900,
           maxWidth: 900,
+          maxHeight: "calc(100vh - 100px)",
+          // maxHeight: "calc(100vh - 40px)",
           bgcolor: "white",
           boxShadow: 24,
           borderRadius: "8px",
@@ -134,6 +135,7 @@ function ActiveCard() {
           margin: "50px auto",
           backgroundColor: (theme) =>
             theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+          overflowY: "auto",
         }}
       >
         <Box
