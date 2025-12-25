@@ -19,6 +19,11 @@ import { injectStore } from "~/utils/authorizeAxios";
 // kỹ thuật inject store vào authorizeAxios
 injectStore(store);
 const persistor = persistStore(store);
+
+import { io } from "socket.io-client";
+import { API_ROOT } from "~/utils/constants";
+export const socketIoInstance = io(API_ROOT);
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <Provider store={store}>

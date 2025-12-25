@@ -30,9 +30,25 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
   };
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box
+      sx={{
+        mt: 2,
+        flex: 1,
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {/* Xử lý thêm comment vào Card */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          mb: 2,
+          flexShrink: 0,
+        }}
+      >
         <Avatar
           sx={{ width: 36, height: 36, cursor: "pointer" }}
           alt="trungquandev"
@@ -48,59 +64,61 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
         />
       </Box>
 
-      {/* Hiển thị danh sách các comments */}
-      {cardComments.length === 0 && (
-        <Typography
-          sx={{
-            pl: "45px",
-            fontSize: "14px",
-            fontWeight: "500",
-            color: "#b1b1b1",
-          }}
-        >
-          No activity found!
-        </Typography>
-      )}
-      {/* Sau cần làm phân trang cho danh sách comments */}
-      {cardComments.map((comment, index) => (
-        <Box
-          sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }}
-          key={index}
-        >
-          <Tooltip title={comment?.userDisplayName}>
-            <Avatar
-              sx={{ width: 36, height: 36, cursor: "pointer" }}
-              alt={comment?.userDisplayName || "trungquandev"}
-              src={comment?.userAvatar}
-            />
-          </Tooltip>
-          <Box sx={{ width: "inherit" }}>
-            <Typography variant="span" sx={{ fontWeight: "bold", mr: 1 }}>
-              {comment?.userDisplayName}
-            </Typography>
+      <Box sx={{ flex: 1, overflowY: "auto", minHeight: 0, maxHeight: "100%" }}>
+        {/* Hiển thị danh sách các comments */}
+        {cardComments.length === 0 && (
+          <Typography
+            sx={{
+              pl: "45px",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#b1b1b1",
+            }}
+          >
+            No activity found!
+          </Typography>
+        )}
+        {/* Sau cần làm phân trang cho danh sách comments */}
+        {cardComments.map((comment, index) => (
+          <Box
+            sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }}
+            key={index}
+          >
+            <Tooltip title={comment?.userDisplayName}>
+              <Avatar
+                sx={{ width: 36, height: 36, cursor: "pointer" }}
+                alt={comment?.userDisplayName || "trungquandev"}
+                src={comment?.userAvatar}
+              />
+            </Tooltip>
+            <Box sx={{ width: "inherit" }}>
+              <Typography variant="span" sx={{ fontWeight: "bold", mr: 1 }}>
+                {comment?.userDisplayName}
+              </Typography>
 
-            <Typography variant="span" sx={{ fontSize: "12px" }}>
-              {moment(comment?.commentedAt).format("llll")}
-            </Typography>
+              <Typography variant="span" sx={{ fontSize: "12px" }}>
+                {moment(comment?.commentedAt).format("llll")}
+              </Typography>
 
-            <Box
-              sx={{
-                display: "block",
-                bgcolor: (theme) =>
-                  theme.palette.mode === "dark" ? "#33485D" : "white",
-                p: "8px 12px",
-                mt: "4px",
-                border: "0.5px solid rgba(0, 0, 0, 0.2)",
-                borderRadius: "4px",
-                wordBreak: "break-word",
-                boxShadow: "0 0 1px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              {comment?.content}
+              <Box
+                sx={{
+                  display: "block",
+                  bgcolor: (theme) =>
+                    theme.palette.mode === "dark" ? "#33485D" : "white",
+                  p: "8px 12px",
+                  mt: "4px",
+                  border: "0.5px solid rgba(0, 0, 0, 0.2)",
+                  borderRadius: "4px",
+                  wordBreak: "break-word",
+                  boxShadow: "0 0 1px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                {comment?.content}
+              </Box>
             </Box>
           </Box>
-        </Box>
-      ))}
+        ))}
+      </Box>
     </Box>
   );
 }

@@ -18,7 +18,11 @@ import {
   selectCurrentNotifications,
   fetchNotificationsAPI,
   updateBoardInvitationAPI,
+  addNotification,
 } from "~/redux/notifications/notificationsSlice";
+import { socketIoInstance } from "~/main";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const BOARD_INVITATION_STATUS = {
   PENDING: "PENDING",
@@ -29,11 +33,16 @@ const BOARD_INVITATION_STATUS = {
 function Notifications() {
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const currentUser = useSelector(selectCurrentUser);
   // lấy dữ liệu notifications từ redux
   const notifications = useSelector(selectCurrentNotifications);
+  const [newNotification, setNewNotification] = useState(false);
+
   const open = Boolean(anchorEl);
   const handleClickNotificationIcon = (event) => {
     setAnchorEl(event.currentTarget);
+    setNewNotification(false);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -43,11 +52,33 @@ function Notifications() {
 
   useEffect(() => {
     dispatch(fetchNotificationsAPI());
-  }, [dispatch]);
+
+    // tạo sự kiện xử lí khi nhân được sự kiện real-time từ server
+    const onRecevieNewInvitation = (invitation) => {
+      //nếu thằng inviteeId của invitation này trùng với id của user hiện tại thì thêm bản ghi invitation mới vào redux
+      if (invitation?.inviteeId === currentUser._id) {
+        dispatch(addNotification(invitation));
+        setNewNotification(true);
+        // thêm bản ghi invitation mới vào redux
+      }
+    };
+    // lắng nghe sự kiện real-time có tên là BE_USER_INVITED_TO_BOARD
+    socketIoInstance.on("BE_USER_INVITED_TO_BOARD", onRecevieNewInvitation);
+
+    // cleanup function để unsubcribe sự kiện real-time khi component unmount tránh đăng kí lặp lại event
+    return () => {
+      socketIoInstance.off("BE_USER_INVITED_TO_BOARD", onRecevieNewInvitation);
+    };
+    // tạo function xử lí khi nhân được sự kiện real-time từ server
+  }, [dispatch, currentUser?._id]);
 
   const updateBoardInvitation = (status, invitationId) => {
     dispatch(updateBoardInvitationAPI({ invitationId, status })).then((res) => {
-      console.log("res: ", res);
+      if (
+        res.payload.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED
+      ) {
+        navigate(`/boards/${res.payload.boardInvitation.boardId}`);
+      }
     });
   };
 
@@ -56,8 +87,7 @@ function Notifications() {
       <Tooltip title="Notifications">
         <Badge
           color="warning"
-          // variant="none"
-          variant="dot"
+          variant={newNotification ? "dot" : "none"}
           sx={{ cursor: "pointer" }}
           id="basic-button-open-notification"
           aria-controls={open ? "basic-notification-drop-down" : undefined}
@@ -67,8 +97,7 @@ function Notifications() {
         >
           <NotificationsNoneIcon
             sx={{
-              // color: 'white'
-              color: "yellow",
+              color: newNotification ? "yellow" : "white",
             }}
           />
         </Badge>

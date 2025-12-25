@@ -121,219 +121,233 @@ function ActiveCard() {
     >
       <Box
         sx={{
-          position: "relative",
-          width: 900,
-          maxWidth: 900,
-          maxHeight: "calc(100vh - 100px)",
-          // maxHeight: "calc(100vh - 40px)",
-          bgcolor: "white",
-          boxShadow: 24,
-          borderRadius: "8px",
-          border: "none",
-          outline: 0,
-          padding: "40px 20px 20px",
-          margin: "50px auto",
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-          overflowY: "auto",
+          position: "fixed",
+          inset: 0,
+          display: "flex",
+          justifyContent: "center",
+          p: 3,
         }}
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "12px",
-            right: "10px",
-            cursor: "pointer",
+            position: "relative",
+            width: "100%",
+            minWidth: 400,
+            maxWidth: 900,
+            maxHeight: "100%",
+            bgcolor: "white",
+            boxShadow: 24,
+            borderRadius: "8px",
+            border: "none",
+            outline: 0,
+            padding: "40px 20px 20px",
+            backgroundColor: (theme) =>
+              theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+            overflowY: "hidden",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <CancelIcon
-            color="error"
-            sx={{ "&:hover": { color: "error.light" } }}
-            onClick={handleCloseModal}
-          />
-        </Box>
-
-        {activeCard?.coverUrl && (
-          <Box sx={{ mb: 4 }}>
-            <img
-              style={{
-                width: "100%",
-                height: "320px",
-                borderRadius: "6px",
-                objectFit: "cover",
-              }}
-              src={activeCard?.coverUrl}
-              alt="card-cover"
+          <Box
+            sx={{
+              position: "absolute",
+              top: "12px",
+              right: "10px",
+              cursor: "pointer",
+            }}
+          >
+            <CancelIcon
+              color="error"
+              sx={{ "&:hover": { color: "error.light" } }}
+              onClick={handleCloseModal}
             />
           </Box>
-        )}
 
-        <Box
-          sx={{
-            mb: 1,
-            mt: -3,
-            pr: 2.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <CreditCardIcon />
+          {activeCard?.coverUrl && (
+            <Box sx={{ mb: 4 }}>
+              <img
+                style={{
+                  width: "100%",
+                  height: "320px",
+                  borderRadius: "6px",
+                  objectFit: "cover",
+                }}
+                src={activeCard?.coverUrl}
+                alt="card-cover"
+              />
+            </Box>
+          )}
 
-          {/* Feature 01: Xử lý tiêu đề của Card */}
-          <ToggleFocusInput
-            inputFontSize="22px"
-            value={activeCard?.title}
-            onChangedValue={onUpdateCardTitle}
-          />
-        </Box>
+          <Box
+            sx={{
+              mb: 1,
+              mt: -3,
+              pr: 2.5,
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <CreditCardIcon />
 
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          {/* Left side */}
-          <Grid xs={12} sm={9}>
-            <Box sx={{ mb: 3 }}>
+            {/* Feature 01: Xử lý tiêu đề của Card */}
+            <ToggleFocusInput
+              inputFontSize="22px"
+              value={activeCard?.title}
+              onChangedValue={onUpdateCardTitle}
+            />
+          </Box>
+
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            {/* Left side */}
+            <Grid xs={12} sm={9}>
+              <Box sx={{ mb: 3 }}>
+                <Typography
+                  sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
+                >
+                  Members
+                </Typography>
+
+                {/* Feature 02: Xử lý các thành viên của Card */}
+                <CardUserGroup />
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <SubjectRoundedIcon />
+                  <Typography
+                    variant="span"
+                    sx={{ fontWeight: "600", fontSize: "20px" }}
+                  >
+                    Description
+                  </Typography>
+                </Box>
+
+                {/* Feature 03: Xử lý mô tả của Card */}
+                <CardDescriptionMdEditor
+                  cardDescriptionProp={activeCard?.description}
+                  handleUpdateCardDescription={onUpdateCardDescription}
+                />
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <DvrOutlinedIcon />
+                  <Typography
+                    variant="span"
+                    sx={{ fontWeight: "600", fontSize: "20px" }}
+                  >
+                    Activity
+                  </Typography>
+                </Box>
+
+                {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
+                <CardActivitySection
+                  cardComments={activeCard?.comments}
+                  onAddCardComment={onAddCardComment}
+                />
+              </Box>
+            </Grid>
+
+            {/* Right side */}
+            <Grid xs={12} sm={3}>
               <Typography
                 sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
               >
-                Members
+                Add To Card
               </Typography>
+              <Stack direction="column" spacing={1}>
+                {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
+                <SidebarItem className="active">
+                  <PersonOutlineOutlinedIcon fontSize="small" />
+                  Join
+                </SidebarItem>
+                {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
+                <SidebarItem className="active" component="label">
+                  <ImageOutlinedIcon fontSize="small" />
+                  Cover
+                  <VisuallyHiddenInput
+                    type="file"
+                    onChange={onUploadCardCover}
+                  />
+                </SidebarItem>
 
-              {/* Feature 02: Xử lý các thành viên của Card */}
-              <CardUserGroup />
-            </Box>
+                <SidebarItem>
+                  <AttachFileOutlinedIcon fontSize="small" />
+                  Attachment
+                </SidebarItem>
+                <SidebarItem>
+                  <LocalOfferOutlinedIcon fontSize="small" />
+                  Labels
+                </SidebarItem>
+                <SidebarItem>
+                  <TaskAltOutlinedIcon fontSize="small" />
+                  Checklist
+                </SidebarItem>
+                <SidebarItem>
+                  <WatchLaterOutlinedIcon fontSize="small" />
+                  Dates
+                </SidebarItem>
+                <SidebarItem>
+                  <AutoFixHighOutlinedIcon fontSize="small" />
+                  Custom Fields
+                </SidebarItem>
+              </Stack>
 
-            <Box sx={{ mb: 3 }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <SubjectRoundedIcon />
-                <Typography
-                  variant="span"
-                  sx={{ fontWeight: "600", fontSize: "20px" }}
-                >
-                  Description
-                </Typography>
-              </Box>
+              <Divider sx={{ my: 2 }} />
 
-              {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor
-                cardDescriptionProp={activeCard?.description}
-                handleUpdateCardDescription={onUpdateCardDescription}
-              />
-            </Box>
+              <Typography
+                sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
+              >
+                Power-Ups
+              </Typography>
+              <Stack direction="column" spacing={1}>
+                <SidebarItem>
+                  <AspectRatioOutlinedIcon fontSize="small" />
+                  Card Size
+                </SidebarItem>
+                <SidebarItem>
+                  <AddToDriveOutlinedIcon fontSize="small" />
+                  Google Drive
+                </SidebarItem>
+                <SidebarItem>
+                  <AddOutlinedIcon fontSize="small" />
+                  Add Power-Ups
+                </SidebarItem>
+              </Stack>
 
-            <Box sx={{ mb: 3 }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <DvrOutlinedIcon />
-                <Typography
-                  variant="span"
-                  sx={{ fontWeight: "600", fontSize: "20px" }}
-                >
-                  Activity
-                </Typography>
-              </Box>
+              <Divider sx={{ my: 2 }} />
 
-              {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-              <CardActivitySection
-                cardComments={activeCard?.comments}
-                onAddCardComment={onAddCardComment}
-              />
-            </Box>
+              <Typography
+                sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
+              >
+                Actions
+              </Typography>
+              <Stack direction="column" spacing={1}>
+                <SidebarItem>
+                  <ArrowForwardOutlinedIcon fontSize="small" />
+                  Move
+                </SidebarItem>
+                <SidebarItem>
+                  <ContentCopyOutlinedIcon fontSize="small" />
+                  Copy
+                </SidebarItem>
+                <SidebarItem>
+                  <AutoAwesomeOutlinedIcon fontSize="small" />
+                  Make Template
+                </SidebarItem>
+                <SidebarItem>
+                  <ArchiveOutlinedIcon fontSize="small" />
+                  Archive
+                </SidebarItem>
+                <SidebarItem>
+                  <ShareOutlinedIcon fontSize="small" />
+                  Share
+                </SidebarItem>
+              </Stack>
+            </Grid>
           </Grid>
-
-          {/* Right side */}
-          <Grid xs={12} sm={3}>
-            <Typography
-              sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
-            >
-              Add To Card
-            </Typography>
-            <Stack direction="column" spacing={1}>
-              {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-              <SidebarItem className="active">
-                <PersonOutlineOutlinedIcon fontSize="small" />
-                Join
-              </SidebarItem>
-              {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
-              <SidebarItem className="active" component="label">
-                <ImageOutlinedIcon fontSize="small" />
-                Cover
-                <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
-              </SidebarItem>
-
-              <SidebarItem>
-                <AttachFileOutlinedIcon fontSize="small" />
-                Attachment
-              </SidebarItem>
-              <SidebarItem>
-                <LocalOfferOutlinedIcon fontSize="small" />
-                Labels
-              </SidebarItem>
-              <SidebarItem>
-                <TaskAltOutlinedIcon fontSize="small" />
-                Checklist
-              </SidebarItem>
-              <SidebarItem>
-                <WatchLaterOutlinedIcon fontSize="small" />
-                Dates
-              </SidebarItem>
-              <SidebarItem>
-                <AutoFixHighOutlinedIcon fontSize="small" />
-                Custom Fields
-              </SidebarItem>
-            </Stack>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Typography
-              sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
-            >
-              Power-Ups
-            </Typography>
-            <Stack direction="column" spacing={1}>
-              <SidebarItem>
-                <AspectRatioOutlinedIcon fontSize="small" />
-                Card Size
-              </SidebarItem>
-              <SidebarItem>
-                <AddToDriveOutlinedIcon fontSize="small" />
-                Google Drive
-              </SidebarItem>
-              <SidebarItem>
-                <AddOutlinedIcon fontSize="small" />
-                Add Power-Ups
-              </SidebarItem>
-            </Stack>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Typography
-              sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
-            >
-              Actions
-            </Typography>
-            <Stack direction="column" spacing={1}>
-              <SidebarItem>
-                <ArrowForwardOutlinedIcon fontSize="small" />
-                Move
-              </SidebarItem>
-              <SidebarItem>
-                <ContentCopyOutlinedIcon fontSize="small" />
-                Copy
-              </SidebarItem>
-              <SidebarItem>
-                <AutoAwesomeOutlinedIcon fontSize="small" />
-                Make Template
-              </SidebarItem>
-              <SidebarItem>
-                <ArchiveOutlinedIcon fontSize="small" />
-                Archive
-              </SidebarItem>
-              <SidebarItem>
-                <ShareOutlinedIcon fontSize="small" />
-                Share
-              </SidebarItem>
-            </Stack>
-          </Grid>
-        </Grid>
+        </Box>
       </Box>
     </Modal>
   );
