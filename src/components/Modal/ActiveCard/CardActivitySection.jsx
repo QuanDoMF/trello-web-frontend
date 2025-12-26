@@ -64,7 +64,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
         />
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: "auto", minHeight: 0, maxHeight: "100%" }}>
+      <Box sx={{ flex: 1, overflowY: "auto", minHeight: 0, maxHeight: "100%", paddingRight: 1 }}>
         {/* Hiển thị danh sách các comments */}
         {cardComments.length === 0 && (
           <Typography

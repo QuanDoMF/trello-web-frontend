@@ -132,6 +132,7 @@ function ActiveCard() {
           sx={{
             position: "relative",
             width: "100%",
+            height: "100%",
             minWidth: 400,
             maxWidth: 900,
             maxHeight: "100%",
@@ -198,9 +199,9 @@ function ActiveCard() {
             />
           </Box>
 
-          <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid container spacing={2} sx={{ mb: 3, height: "100%" }}>
             {/* Left side */}
-            <Grid xs={12} sm={9}>
+            <Grid xs={12} sm={9} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
               <Box sx={{ mb: 3 }}>
                 <Typography
                   sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
@@ -230,7 +231,7 @@ function ActiveCard() {
                 />
               </Box>
 
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 3, flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <DvrOutlinedIcon />
                   <Typography
