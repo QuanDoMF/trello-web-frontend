@@ -32,6 +32,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
   return (
     <Box
       sx={{
+        paddingRight: '6px',
         mt: 2,
         flex: 1,
         minHeight: 0,
@@ -47,6 +48,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
           gap: 1,
           mb: 2,
           flexShrink: 0,
+          paddingRight: '12px',
         }}
       >
         <Avatar
@@ -64,7 +66,12 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
         />
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: "auto", minHeight: 0, maxHeight: "100%", paddingRight: 1 }}>
+      <Box sx={{ flex: 1, overflowY: "auto", minHeight: 0,
+                maxHeight: "100%", paddingRight: '6px', 
+                '&::-webkit-scrollbar': {
+                  width: '0.4rem'
+                }
+              }}>
         {/* Hiển thị danh sách các comments */}
         {cardComments.length === 0 && (
           <Typography

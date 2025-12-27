@@ -120,6 +120,7 @@ function ActiveCard() {
       onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
     >
       <Box
+        onClick={handleCloseModal}
         sx={{
           position: "fixed",
           inset: 0,
@@ -129,6 +130,7 @@ function ActiveCard() {
         }}
       >
         <Box
+          onClick={(e) => e.stopPropagation()}
           sx={{
             position: "relative",
             width: "100%",
@@ -199,7 +201,7 @@ function ActiveCard() {
             />
           </Box>
 
-          <Grid container spacing={2} sx={{ mb: 3, height: "100%" }}>
+          <Grid container sx={{ mb: 3, height: "100%" }}>
             {/* Left side */}
             <Grid xs={12} sm={9} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
               <Box sx={{ mb: 3 }}>
@@ -213,7 +215,7 @@ function ActiveCard() {
                 <CardUserGroup />
               </Box>
 
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 3, paddingRight: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <SubjectRoundedIcon />
                   <Typography
