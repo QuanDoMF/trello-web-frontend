@@ -164,6 +164,8 @@ const Column = ({ column }) => {
       <Box
         {...listeners}
         sx={{
+          display: "flex",
+          flexDirection: "column",
           minWidth: "300px",
           maxWidth: "300px",
           bgcolor: (theme) =>
