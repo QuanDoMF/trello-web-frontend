@@ -88,7 +88,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
         {/* Sau cần làm phân trang cho danh sách comments */}
         {cardComments.map((comment, index) => (
           <Box
-            sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }}
+            sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%", mb: 1.5 }}
             key={index}
           >
             <Tooltip title={comment?.userDisplayName}>
