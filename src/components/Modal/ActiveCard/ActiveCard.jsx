@@ -42,6 +42,8 @@ import {
 } from "~/redux/activeCard/activeCardSlice";
 import { updateCardDetailsAPI } from "~/apis";
 import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
 
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -68,6 +70,7 @@ function ActiveCard() {
   const dispatch = useDispatch();
   const activeCard = useSelector(selectCurrentActiveCard);
   const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
+  const currentUser = useSelector(selectCurrentUser);
 
   const handleCloseModal = () => {
     dispatch(clearAndHideCurrentActiveCard());
@@ -78,7 +81,25 @@ function ActiveCard() {
     const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData);
     dispatch(updateCurrentActiveCard(updatedCard));
     dispatch(updateCardInBoard(updatedCard));
-    return;
+    return updatedCard;
+  };
+
+  const onUpdateCardMembers = (incomingMemberInfo) => {
+    callApiUpdateCard({ incomingMemberInfo });
+  };
+
+  const isCurrentUserMemberOfCard = activeCard?.memberIds?.includes(
+    currentUser?._id
+  );
+
+  const handleToggleJoinCard = () => {
+    const incomingMemberInfo = {
+      userId: currentUser._id,
+      action: isCurrentUserMemberOfCard
+        ? CARD_MEMBER_ACTIONS.REMOVE
+        : CARD_MEMBER_ACTIONS.ADD,
+    };
+    callApiUpdateCard({ incomingMemberInfo });
   };
 
   const onUpdateCardTitle = (newTitle) => {
@@ -203,7 +224,11 @@ function ActiveCard() {
 
           <Grid container sx={{ mb: 3, height: "100%" }}>
             {/* Left side */}
-            <Grid xs={12} sm={9} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+            <Grid
+              xs={12}
+              sm={9}
+              sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+            >
               <Box sx={{ mb: 3 }}>
                 <Typography
                   sx={{ fontWeight: "600", color: "primary.main", mb: 1 }}
@@ -212,7 +237,10 @@ function ActiveCard() {
                 </Typography>
 
                 {/* Feature 02: Xử lý các thành viên của Card */}
-                <CardUserGroup />
+                <CardUserGroup
+                  cardMemberIds={activeCard?.memberIds || []}
+                  onUpdateCardMembers={onUpdateCardMembers}
+                />
               </Box>
 
               <Box sx={{ mb: 3, paddingRight: 2 }}>
@@ -233,7 +261,15 @@ function ActiveCard() {
                 />
               </Box>
 
-              <Box sx={{ mb: 3, flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+              <Box
+                sx={{
+                  mb: 3,
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: 0,
+                }}
+              >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <DvrOutlinedIcon />
                   <Typography
@@ -261,9 +297,9 @@ function ActiveCard() {
               </Typography>
               <Stack direction="column" spacing={1}>
                 {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-                <SidebarItem className="active">
+                <SidebarItem className="active" onClick={handleToggleJoinCard}>
                   <PersonOutlineOutlinedIcon fontSize="small" />
-                  Join
+                  {isCurrentUserMemberOfCard ? "Leave" : "Join"}
                 </SidebarItem>
                 {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
                 <SidebarItem className="active" component="label">
